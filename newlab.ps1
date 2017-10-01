@@ -1,7 +1,13 @@
-<#TO DO:
+<#
+newlab.ps1
+script built to deploy my test Exchange lab using AutomatedLab (https://github.com/AutomatedLab/AutomatedLab)
+#>
+
+<#
+TO DO:
     Add CA
-    Install KBs and .net 4.6.2 on EX13/16
-    Figure out networking with preexisting vswitch (for external access)
+    Install necessary KBs and .net 4.6.2 on EX13/16
+    Figure out networking
 #>
 
 $labName = 'EXLab'
