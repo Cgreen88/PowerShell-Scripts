@@ -10,7 +10,10 @@ TO DO:
     Figure out networking
 #>
 
-$labName = 'EXLab'
+$labName = ""
+$domain = ""
+$un = ""
+$pw = ""
 
 #create an empty lab template and define where the lab XML files and the VMs will be stored
 New-LabDefinition -Name $labName -DefaultVirtualizationEngine HyperV -Path E:\AutoLab -vmpath D:\VM
@@ -19,9 +22,9 @@ New-LabDefinition -Name $labName -DefaultVirtualizationEngine HyperV -Path E:\Au
 Add-LabVirtualNetworkDefinition -Name $labName -AddressSpace 10.10.2.1/24
 
 #and the domain definition with the domain admin account
-Add-LabDomainDefinition -Name **Domain** -AdminUser **UN** -AdminPassword **pw**
+Add-LabDomainDefinition -Name $domain -AdminUser $un -AdminPassword $pw
 
-Set-LabInstallationCredential -Username **un** -Password **pw**
+Set-LabInstallationCredential -Username $un -Password $pw
 
 #defining default parameter values, as these ones are the same for all the machines
 $PSDefaultParameterValues = @{
@@ -29,14 +32,14 @@ $PSDefaultParameterValues = @{
     'Add-LabMachineDefinition:ToolsPath'= "$labSources\Tools"
     'Add-LabMachineDefinition:IsDomainJoined'= $true
 	'Add-LabMachineDefinition:DnsServer1'= '10.10.2.101'
-	'Add-LabMachineDefinition:DomainName'= 'ehloexchange.net'
+	'Add-LabMachineDefinition:DomainName'= "$domain"
 }
 
 #Build Domain Controler 
 $role = Get-LabMachineRoleDefinition -Role RootDC @{ DomainFunctionalLevel = 'Win2008R2'; ForestFunctionalLevel = 'Win2008R2' }
 #The PostInstallationActivity is just creating some users
 $postInstallActivity = Get-LabPostInstallationActivity -ScriptFileName PrepareRootDomain.ps1 -DependencyFolder $labSources\PostInstallationActivities\PrepareRootDomain
-Add-LabMachineDefinition -Name DC01 -Memory 1024MB -IpAddress 10.10.2.101 -DomainName ehloexchange.net -Roles $role -PostInstallationActivity $postInstallActivity -OperatingSystem 'Windows Server 2016 SERVERSTANDARD'
+Add-LabMachineDefinition -Name DC01 -Memory 1024MB -IpAddress 10.10.2.101 -DomainName $domain -Roles $role -PostInstallationActivity $postInstallActivity -OperatingSystem 'Windows Server 2016 SERVERSTANDARD'
 
 #Exchange 2010 Server
 Add-LabDiskDefinition -Name 10-1 -DiskSizeInGb 20
