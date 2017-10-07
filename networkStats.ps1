@@ -44,5 +44,4 @@
         }
     }
 }
-
 Get-NetworkStatistics | Format-Table 
